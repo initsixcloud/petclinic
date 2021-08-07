@@ -1,0 +1,39 @@
+#Deployment
+###controllers/pb-deploy.tml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+  minReadySeconds: 5
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: petclinic-app
+  template:
+    metadata:
+      labels:
+        app: petclinic-app
+    spec:
+      containers:
+      - name: petclinic-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: '1'
+            memory: '500Mi'
+          requests:
+            cpu: '1'
+            memory: '500Mi'
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: regcred
+
+
+
